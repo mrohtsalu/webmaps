@@ -15,40 +15,26 @@ async function addDistrictsGeoJson(url) {
 }
 addDistrictsGeoJson('geojson/tartu_city_districts_edu.geojson')
 
-// add popup to each feature
-function popUPinfo(feature, layer) {
- layer.bindPopup(feature.properties.NIMI)
-}
-// add geoJSON polygons layer
-async function addDistrictsGeoJson(url) {
- const response = await fetch(url)
- const data = await response.json()
- const polygons = L.geoJson(data, {
- onEachFeature: popUPinfo,
- })
- polygons.addTo(map)
-}
-addDistrictsGeoJson('geojson/tartu_city_districts_edu.geojson')
-
-// add geoJSON points layer*
-async function addCelltowersGeoJson(url) {
- const response = await fetch(url)
- const data = await response.json()
- const markers = L.geoJson(data)
- markers.addTo(map)
-}
-addCelltowersGeoJson('geojson/tartu_city_celltowers_edu.geojson')
-
+addGeoJson('geojson/tartu_city_districts_edu.geojson')
 // add geoJSON layer
-async function addCelltowersGeoJson(url) {
+async function addGeoJson(url) {
  const response = await fetch(url)
  const data = await response.json()
- const markers = L.geoJson(data)
- const clusters = L.markerClusterGroup()
- clusters.addLayer(markers)
- clusters.addTo(map)
+ L.choropleth(data, {
+ valueProperty: 'OBJECTID',
+ scale: ['#ffffff', '#ff4da6'],
+ steps: 5,
+ mode: 'q', // q for quantile, e for equidistant
+ style: {
+ color: '#fff',
+ weight: 2,
+ fillOpacity: 0.8,
+ },
+ onEachFeature: function (feature, layer) {
+ layer.bindPopup('Value: ' + feature.properties.OBJECTID)
+ },
+ }).addTo(map)
 }
-addCelltowersGeoJson('geojson/tartu_city_celltowers_edu.geojson')
 
 // default map settings
 function defaultMapSettings() {
