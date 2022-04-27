@@ -6,15 +6,6 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 })
 osm.addTo(map)
 
-// add geoJSON polygons layer*
-async function addDistrictsGeoJson(url) {
- const response = await fetch(url)
- const data = await response.json()
- const polygons = L.geoJson(data)
- polygons.addTo(map)
-}
-addDistrictsGeoJson('geojson/tartu_city_districts_edu.geojson')
-
 addGeoJson('geojson/tartu_city_celltowers_edu.geojson')
 // add geoJSON layer
 async function addGeoJson(url) {
@@ -56,6 +47,15 @@ function heatDataConvert(feature) {
  feature.properties.area,
  ]
 }
+
+// add geoJSON polygons layer*
+async function addDistrictsGeoJson(url) {
+ const response = await fetch(url)
+ const data = await response.json()
+ const polygons = L.geoJson(data)
+ polygons.addTo(map)
+}
+addDistrictsGeoJson('geojson/tartu_city_districts_edu.geojson')
 
 // default map settings
 function defaultMapSettings() {
