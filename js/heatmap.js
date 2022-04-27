@@ -48,15 +48,6 @@ function heatDataConvert(feature) {
  ]
 }
 
-// add geoJSON polygons layer*
-async function addDistrictsGeoJson(url) {
- const response = await fetch(url)
- const data = await response.json()
- const polygons = L.geoJson(data)
- polygons.addTo(map)
-}
-addDistrictsGeoJson('geojson/tartu_city_districts_edu.geojson')
-
 // default map settings
 function defaultMapSettings() {
  map.setView([58.373523, 26.716045], 12)
