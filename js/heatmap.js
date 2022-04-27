@@ -6,49 +6,47 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 })
 osm.addTo(map)
 
-// add geoJSON polygons layer*
-async function addDistrictsGeoJson(url) {
- const response = await fetch(url)
- const data = await response.json()
- const polygons = L.geoJson(data)
- polygons.addTo(map)
-}
-addDistrictsGeoJson('geojson/tartu_city_districts_edu.geojson')
-
-// add popup to each feature
-function popUPinfo(feature, layer) {
- layer.bindPopup(feature.properties.NIMI)
-}
-// add geoJSON polygons layer
-async function addDistrictsGeoJson(url) {
- const response = await fetch(url)
- const data = await response.json()
- const polygons = L.geoJson(data, {
- onEachFeature: popUPinfo,
- })
- polygons.addTo(map)
-}
-addDistrictsGeoJson('geojson/tartu_city_districts_edu.geojson')
-
-// add geoJSON points layer*
-async function addCelltowersGeoJson(url) {
- const response = await fetch(url)
- const data = await response.json()
- const markers = L.geoJson(data)
- markers.addTo(map)
-}
-addCelltowersGeoJson('geojson/tartu_city_celltowers_edu.geojson')
-
+addGeoJson('geojson/tartu_city_celltowers_edu.geojson')
 // add geoJSON layer
-async function addCelltowersGeoJson(url) {
+async function addGeoJson(url) {
  const response = await fetch(url)
  const data = await response.json()
- const markers = L.geoJson(data)
- const clusters = L.markerClusterGroup()
- clusters.addLayer(markers)
- clusters.addTo(map)
+ console.log(data.features[0])
 }
-addCelltowersGeoJson('geojson/tartu_city_celltowers_edu.geojson')
+
+addGeoJson('geojson/tartu_city_celltowers_edu.geojson')
+// add geoJSON layer
+async function addGeoJson(url) {
+ const response = await fetch(url)
+ const data = await response.json()
+ const heatData = data.features.map(heatDataConvert)
+ console.log(heatData)
+}
+function heatDataConvert(feature) {
+ return [
+ feature.geometry.coordinates[1],
+ feature.geometry.coordinates[0],
+ feature.properties.area,
+ ]
+}
+
+addGeoJson('geojson/tartu_city_celltowers_edu.geojson')
+// add geoJSON layer
+async function addGeoJson(url) {
+ const response = await fetch(url)
+ const data = await response.json()
+ const heatData = data.features.map(heatDataConvert)
+ const heatMap = L.heatLayer(heatData, { radius: 10 })
+ heatMap.addTo(map)
+}
+// prepare spatial data for Leaflet heat
+function heatDataConvert(feature) {
+ return [
+ feature.geometry.coordinates[1],
+ feature.geometry.coordinates[0],
+ feature.properties.area,
+ ]
+}
 
 // default map settings
 function defaultMapSettings() {
