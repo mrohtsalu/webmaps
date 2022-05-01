@@ -20,6 +20,18 @@ function popUPinfo(feature, layer) {
  layer.bindPopup(feature.properties.NIMI)
 }
 
+// add geoJSON polygons layer
+async function addDistrictsGeoJson(url) {
+ const response = await fetch(url)
+ const data = await response.json()
+ const polygons = L.geoJson(data, {
+ onEachFeature: popUPinfo,
+ })
+ polygons.addTo(map)
+}
+addDistrictsGeoJson('geojson/tartu_city_districts_edu.geojson')
+
+
 // get color from feature property
 function getColor(property) {
  switch (property) {
@@ -44,17 +56,6 @@ function polygonStyle(feature) {
  color: 'grey',
  }
 }
-
-// add geoJSON polygons layer
-async function addDistrictsGeoJson(url) {
- const response = await fetch(url)
- const data = await response.json()
- const polygons = L.geoJson(data, {
- onEachFeature: popUPinfo,
- })
- polygons.addTo(map)
-}
-addDistrictsGeoJson('geojson/tartu_city_districts_edu.geojson')
 
 // add geoJSON points layer*
 async function addCelltowersGeoJson(url) {
